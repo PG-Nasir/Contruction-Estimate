@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProjectEstimateSummery" language="groovy" pageWidth="595" pageHeight="813" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="20">
+	<property name="ireport.zoom" value="2.143588810000011"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="182"/>
+	<parameter name="sql" class="java.lang.String">
+		<defaultValueExpression><![CDATA["select b.deduction,b.ItemText,b.ItemCode1,b.ItemCode2,(select CategoryTitle from tbCategoryInfo where categoryId=(select categoryId from TbItemInfo where ItemCode=b.ItemCode1)) as GroupName,(select Description from TbDivisionInfo where DivisionId=(select DivisionId from TbItemInfo where ItemCode=b.ItemCode1)) as DivisionDes,(select Description from TbItemInfo where ItemCode=b.ItemCode1) as ItemDescription,b.Description as Description00000 ,b.Unit,sum(b.Nos) as Nos,sum(b.length) as length,sum(b.Base) as Base,sum(b.Height) as Height,sum(b.Qty) as Qty,b.rate,sum(b.Amount) as Amount,a.projectid,a.projectCode,a.projectName,a.AdpNo,a.description,a.TotalQty,a.TotalRate,a.TotalAmount from tbprojectinfo a join tbprojectdetails b on a.projectId=b.projectId where a.projectid='16' group by b.ItemCode1, b.Deduction order by b.autoId"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="orgName" class="java.lang.String"/>
+	<parameter name="orgAddress" class="java.lang.String"/>
+	<parameter name="orgMobile" class="java.lang.String"/>
+	<parameter name="devName" class="java.lang.String"/>
+	<parameter name="devEmail" class="java.lang.String"/>
+	<parameter name="devTele" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[$P!{sql}]]>
+	</queryString>
+	<field name="Deduction" class="java.lang.Object"/>
+	<field name="ItemText" class="java.lang.Object"/>
+	<field name="ItemCode1" class="java.lang.Object"/>
+	<field name="ItemCode2" class="java.lang.Object"/>
+	<field name="GroupName" class="java.lang.Object"/>
+	<field name="DivisionDes" class="java.lang.Object"/>
+	<field name="ItemDescription" class="java.lang.Object"/>
+	<field name="Description00000" class="java.lang.Object"/>
+	<field name="Unit" class="java.lang.Object"/>
+	<field name="Nos" class="java.lang.Object"/>
+	<field name="length" class="java.lang.Object"/>
+	<field name="Base" class="java.lang.Object"/>
+	<field name="Height" class="java.lang.Object"/>
+	<field name="Qty" class="java.lang.Object"/>
+	<field name="Rate" class="java.lang.Object"/>
+	<field name="Amount" class="java.lang.Object"/>
+	<field name="projectId" class="java.lang.Object"/>
+	<field name="projectCode" class="java.lang.Object"/>
+	<field name="projectName" class="java.lang.Object"/>
+	<field name="AdpNo" class="java.lang.Object"/>
+	<field name="description" class="java.lang.Object"/>
+	<field name="TotalQty" class="java.lang.Object"/>
+	<field name="TotalRate" class="java.lang.Object"/>
+	<field name="TotalAmount" class="java.lang.Object"/>
+	<variable name="SL" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+	</variable>
+	<variable name="gtotal" class="java.math.BigDecimal" resetType="Group" resetGroup="PGP" calculation="Sum">
+		<variableExpression><![CDATA[$F{Qty}]]></variableExpression>
+	</variable>
+	<variable name="totalduc" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Deduction}.equals("1")?$F{Qty}:0]]></variableExpression>
+	</variable>
+	<variable name="totalnoduc" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Deduction}.equals("0")?$F{Qty}:0]]></variableExpression>
+	</variable>
+	<variable name="grandtotal" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{totalnoduc}-$V{totalduc}]]></variableExpression>
+	</variable>
+	<group name="PGP">
+		<groupExpression><![CDATA[$F{Deduction}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField>
+					<reportElement x="1" y="0" width="236" height="13"/>
+					<textElement>
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{Deduction}.equals("1")?"Deduct stair(-)":""]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="16">
+				<textField pattern="#,##0.000">
+					<reportElement x="475" y="2" width="79" height="13"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{gtotal}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="3" y="21" width="547" height="57"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="8" width="45" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ADP NO-]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="50" y="7" width="547" height="14"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AdpNo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="14" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="13"/>
+			</line>
+			<line>
+				<reportElement x="23" y="1" width="1" height="13"/>
+			</line>
+			<line>
+				<reportElement x="73" y="1" width="1" height="13"/>
+			</line>
+			<line>
+				<reportElement x="151" y="0" width="1" height="14"/>
+			</line>
+			<line>
+				<reportElement x="399" y="0" width="1" height="14"/>
+			</line>
+			<line>
+				<reportElement x="466" y="0" width="1" height="14"/>
+			</line>
+			<line>
+				<reportElement x="554" y="0" width="1" height="14"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="1" width="22" height="13"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[SL#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="24" y="1" width="49" height="13"/>
+				<box leftPadding="2"/>
+				<textElement/>
+				<text><![CDATA[GROUP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="1" width="77" height="13"/>
+				<box leftPadding="2"/>
+				<textElement/>
+				<text><![CDATA[ITEM CODE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="152" y="1" width="247" height="13"/>
+				<box leftPadding="2"/>
+				<textElement/>
+				<text><![CDATA[DESCRIPTION OF ITEM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="401" y="1" width="64" height="13"/>
+				<box leftPadding="2"/>
+				<textElement/>
+				<text><![CDATA[UNIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="468" y="1" width="86" height="13"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[QYANTITY]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="-1" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="0" y="13" width="555" height="1" isPrintInFirstWholeBand="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="13" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="23" y="0" width="1" height="13" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="73" y="0" width="1" height="13" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="151" y="-1" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="399" y="-1" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="466" y="-1" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="554" y="-1" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="24" y="0" width="49" height="13"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{GroupName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="74" y="0" width="77" height="13"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ItemCode1}+" "+$F{ItemCode2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="152" y="0" width="246" height="13"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{DivisionDes}==null?"":$F{DivisionDes})+"\n"+$F{ItemDescription}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="401" y="0" width="64" height="13"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Unit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="468" y="0" width="86" height="13"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Qty}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="1" y="0" width="22" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$V{SL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="156" y="0" width="243" height="14">
+					<printWhenExpression><![CDATA[$F{ItemCode1}.equals("00000")?true:false]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Description00000}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="44" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="359" y="10" width="163" height="14">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{devEmail}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="41" y="10" width="158" height="14">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA["System Developed by-"+$P{devName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="14" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="-1" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="13" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="13"/>
+			</line>
+			<line>
+				<reportElement x="466" y="-1" width="1" height="14"/>
+			</line>
+			<line>
+				<reportElement x="554" y="-1" width="1" height="14"/>
+			</line>
+			<textField pattern="#,##0.000">
+				<reportElement x="468" y="0" width="86" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{grandtotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="0" width="150" height="13"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EsmitateReport" language="groovy" pageWidth="595" pageHeight="849" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.8150000000000004"/>
+	<property name="ireport.x" value="341"/>
+	<property name="ireport.y" value="229"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="sql" class="java.lang.String">
+		<defaultValueExpression><![CDATA["select  (select group_concat((select Description from tbItemInfo where ItemCode=tbProjectAditionalItem.aditionalItemCode),'') from tbProjectAditionalItem where projectId=a.projectId and parentItemCode=b.ItemCode1) as AditionalCodeDes,b.autoId,b.ItemText,b.ItemCode1,b.ItemCode2,(select Description from TbDivisionInfo where DivisionId=(select DivisionId from TbItemInfo where ItemCode=b.ItemCode1)) as DivisionDes,b.autoId,b.ItemText,b.ItemCode1,b.ItemCode2,(select Description from TbDivisionInfo where DivisionId=(select DivisionId from TbItemInfo where ItemCode=b.ItemCode1)) as DivisionDes,(select Description from TbItemInfo where ItemCode=b.ItemCode1) as ItemDescription,b.Description as Description00000,b.Part,b.Unit,printf('%.3f', b.Nos) as Nos,b.Nos as AcNos, printf('%.3f', b.Site) as Site,b.site as AcSite,ifnull(b.NSUnit,'') as NSUnit,printf('%.3f', b.length) as length,b.length as Aclength,printf('%.3f', b.Base) as Base,b.base as AcBase,printf('%.3f', b.Height) as Height,b.Height as AcHeight,ifnull(b.LBHUnit,'') as LBHUnit,b.Qty,b.rate,b.Amount,b.deduction,a.projectid,a.projectCode,a.projectName,a.AdpNo,a.description,a.TotalQty,a.TotalRate,a.TotalAmount,c.ItemCode,c.Description,c.qty as salvageQty,c.rate as salvageRate,c.amount as salvageAmount from tbprojectinfo a, tbSalvageDeduction c join tbprojectdetails b on a.projectId=b.projectId where a.projectid='84'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="orgName" class="java.lang.String"/>
+	<parameter name="orgAddress" class="java.lang.String"/>
+	<parameter name="orgMobile" class="java.lang.String"/>
+	<parameter name="devName" class="java.lang.String"/>
+	<parameter name="devEmail" class="java.lang.String"/>
+	<parameter name="devTele" class="java.lang.String"/>
+	<parameter name="parameter1" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[$P!{sql}]]>
+	</queryString>
+	<field name="AditionalCodeDes" class="java.lang.Object"/>
+	<field name="autoId" class="java.lang.Object"/>
+	<field name="ItemText" class="java.lang.Object"/>
+	<field name="ItemCode1" class="java.lang.Object"/>
+	<field name="ItemCode2" class="java.lang.Object"/>
+	<field name="DivisionDes" class="java.lang.Object"/>
+	<field name="ItemDescription" class="java.lang.Object"/>
+	<field name="Description00000" class="java.lang.Object"/>
+	<field name="Part" class="java.lang.Object"/>
+	<field name="Unit" class="java.lang.Object"/>
+	<field name="Nos" class="java.lang.Object"/>
+	<field name="AcNos" class="java.lang.Object"/>
+	<field name="Site" class="java.lang.Object"/>
+	<field name="AcSite" class="java.lang.Object"/>
+	<field name="NSUnit" class="java.lang.Object"/>
+	<field name="length" class="java.lang.Object"/>
+	<field name="Aclength" class="java.lang.Object"/>
+	<field name="Base" class="java.lang.Object"/>
+	<field name="AcBase" class="java.lang.Object"/>
+	<field name="Height" class="java.lang.Object"/>
+	<field name="AcHeight" class="java.lang.Object"/>
+	<field name="LBHUnit" class="java.lang.Object"/>
+	<field name="Qty" class="java.lang.Object"/>
+	<field name="Rate" class="java.lang.Object"/>
+	<field name="Amount" class="java.lang.Object"/>
+	<field name="Deduction" class="java.lang.Object"/>
+	<field name="projectId" class="java.lang.Object"/>
+	<field name="projectCode" class="java.lang.Object"/>
+	<field name="projectName" class="java.lang.Object"/>
+	<field name="AdpNo" class="java.lang.Object"/>
+	<field name="description" class="java.lang.Object"/>
+	<field name="TotalQty" class="java.lang.Object"/>
+	<field name="TotalRate" class="java.lang.Object"/>
+	<field name="TotalAmount" class="java.lang.Object"/>
+	<field name="ItemCode" class="java.lang.Object"/>
+	<field name="salvageQty" class="java.lang.Object"/>
+	<field name="salvageRate" class="java.lang.Object"/>
+	<field name="salvageAmount" class="java.lang.Object"/>
+	<variable name="tqty" class="java.math.BigDecimal" resetType="Group" resetGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[($F{Deduction}.equals("0")?$F{Qty}:0)-($F{Deduction}.equals("1")?$F{Qty}:0)]]></variableExpression>
+	</variable>
+	<variable name="tAmount" class="java.math.BigDecimal" resetType="Group" resetGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$F{Amount}]]></variableExpression>
+	</variable>
+	<variable name="tRate" class="java.math.BigDecimal" resetType="Group" resetGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[$F{Rate}]]></variableExpression>
+	</variable>
+	<variable name="NoOfItem" class="java.lang.Integer"/>
+	<variable name="sl" class="java.lang.Number" incrementType="Group" incrementGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<variable name="rsl" class="java.lang.Integer" resetType="Group" resetGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+	</variable>
+	<variable name="deduction" class="java.lang.String" resetType="Group" resetGroup="gDeduc">
+		<variableExpression><![CDATA[$F{Deduction}.equals("1")?"Deduct (-)":""]]></variableExpression>
+		<initialValueExpression><![CDATA[$F{Deduction}.equals("1")?"Deduct (-)":""]]></initialValueExpression>
+	</variable>
+	<variable name="gqty" class="java.math.BigDecimal" resetType="Group" resetGroup="gDeduc" calculation="Sum">
+		<variableExpression><![CDATA[$F{Qty}]]></variableExpression>
+	</variable>
+	<variable name="gitemqty" class="java.math.BigDecimal" resetType="Group" resetGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[($F{Deduction}.equals("0")?$F{Qty}:0)]]></variableExpression>
+	</variable>
+	<variable name="gitemdqty" class="java.math.BigDecimal" resetType="Group" resetGroup="ItemCode" calculation="Sum">
+		<variableExpression><![CDATA[($F{Deduction}.equals("1")?$F{Qty}:0)]]></variableExpression>
+	</variable>
+	<variable name="gactqty" class="java.lang.Double" resetType="None">
+		<variableExpression><![CDATA[($V{gitemqty}-$V{gitemdqty})*$F{Rate}]]></variableExpression>
+	</variable>
+	<group name="division">
+		<groupExpression><![CDATA[$F{DivisionDes}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField isBlankWhenNull="true">
+					<reportElement isPrintRepeatedValues="false" x="94" y="1" width="436" height="20"/>
+					<textElement textAlignment="Justified"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{DivisionDes}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="ItemCode">
+		<groupExpression><![CDATA[$F{ItemCode1}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="94" y="3" width="436" height="14"/>
+					<textElement textAlignment="Justified"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ItemDescription}+"\n"+($F{AditionalCodeDes}==null?"":$F{AditionalCodeDes})]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="ItemCode" isBlankWhenNull="true">
+					<reportElement x="8" y="3" width="32" height="13"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sl}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="24" y="3" width="70" height="15" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Justified">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ItemCode1}+($F{ItemCode2}!=""?"+":"")+$F{ItemCode2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="95" y="4" width="435" height="14">
+						<printWhenExpression><![CDATA[$F{ItemCode1}.toString().substring(0,3).equals("000")?true:false]]></printWhenExpression>
+					</reportElement>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[""+$F{Description00000}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="39">
+				<textField pattern="#,##0.000" isBlankWhenNull="true">
+					<reportElement x="408" y="3" width="70" height="14">
+						<printWhenExpression><![CDATA[$F{Deduction}.equals("1")?true:false]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{tqty}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="408" y="1" width="69" height="1">
+						<printWhenExpression><![CDATA[$F{Deduction}.equals("1")?true:false]]></printWhenExpression>
+					</reportElement>
+				</line>
+				<textField pattern="#,##0.000" isBlankWhenNull="true">
+					<reportElement x="146" y="18" width="166" height="14"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA["@TK. "+$F{Rate}+" -p/"+$F{Unit}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="488" y="3" width="67" height="13">
+						<printWhenExpression><![CDATA[$F{Deduction}.equals("1")?true:false]]></printWhenExpression>
+					</reportElement>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[""+$F{Unit}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.000">
+					<reportElement x="488" y="18" width="67" height="13"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{gactqty}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="458" y="18" width="18" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<text><![CDATA[Tk]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Part">
+		<groupExpression><![CDATA[$F{Part}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField isStretchWithOverflow="true">
+					<reportElement x="95" y="0" width="368" height="13"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[""+$F{Part}.replace( '#', '\n' ).trim()]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="gDeduc">
+		<groupExpression><![CDATA[$F{Deduction}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField isBlankWhenNull="true">
+					<reportElement x="136" y="0" width="160" height="13" isRemoveLineWhenBlank="true"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{deduction}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<line>
+					<reportElement x="408" y="0" width="69" height="1"/>
+				</line>
+				<textField pattern="#,##0.000" isBlankWhenNull="true">
+					<reportElement x="408" y="0" width="69" height="13" isRemoveLineWhenBlank="true"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{gqty}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="390" y="-1" width="17" height="14" isRemoveLineWhenBlank="true">
+						<printWhenExpression><![CDATA[$F{Deduction}.equals("1")?true:false]]></printWhenExpression>
+					</reportElement>
+					<textElement/>
+					<text><![CDATA[(-)]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="488" y="0" width="67" height="13" isRemoveLineWhenBlank="true">
+						<printWhenExpression><![CDATA[$F{Deduction}.equals("1")?false:true]]></printWhenExpression>
+					</reportElement>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[""+$F{Unit}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="8" y="20" width="547" height="57"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="7" width="45" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ADP NO-]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="55" y="6" width="547" height="14"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AdpNo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="1" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField evaluationTime="Auto" pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="136" y="0" width="304" height="13"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AcNos}
++($F{AcSite}==''?"":($F{AcNos}!='' && $F{AcSite}!='')?' X '+$F{AcSite}:$F{AcSite})
++($F{Aclength}==''?"":(($F{AcNos}!='' || $F{AcSite}!='') && $F{Aclength}!='')?' X '+$F{Aclength}+$F{LBHUnit}:$F{Aclength}+$F{LBHUnit})
++($F{AcBase}==''?"":(($F{AcNos}!='' || $F{AcSite}!='' || $F{Aclength}!='') && $F{AcBase}!='')?' X '+$F{AcBase}+$F{LBHUnit}:$F{AcBase}+$F{LBHUnit})
++($F{AcHeight}==''?"":(($F{AcNos}!='' || $F{AcSite}!='' || $F{Aclength}!='' || $F{AcBase}!='') && $F{AcHeight}!='')?' X '+$F{AcHeight}+$F{LBHUnit}:$F{AcHeight}+$F{LBHUnit})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="408" y="0" width="70" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="93" y="1" width="69" height="13"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{ItemText}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="488" y="1" width="67" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Unit}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="32" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="24" y="0" width="158" height="14">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA["System Developed by-"+$P{devName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="245" y="0" width="163" height="14">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{devEmail}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="19" splitType="Stretch">
+			<staticText>
+				<reportElement x="396" y="4" width="65" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[ Total Tk]]></text>
+			</staticText>
+			<line>
+				<reportElement x="8" y="4" width="542" height="1"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="463" y="5" width="70" height="14"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{TotalAmount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,50 @@
+.root{
+    -fx-font-size: 10pt;
+    -fx-font-weight:Normal;
+    -fx-font-family: "Arial";
+    -fx-background-image: url("/Icons/cht_bg.png");
+    -fx-background-size: cover;
+    -fx-base: rgb(176,196,222);
+}
+#ClientName{
+	-fx-font-size: 18pt;
+	-fx-font-weight:Normal;
+	-fx-font-family: "Arial";
+}
+#cleintInfo{
+	-fx-font-size: 9pt;
+	-fx-font-weight:bold;
+}
+#BlackLine{
+	-fx-background-color: #000;
+}
+#btnLogout{
+	-fx-background-color: #FFFFFF;
+	-fx-font-size: 9pt;
+	-fx-font-weight:bold;
+	-fx-font-color:#FFFFFF;
+}
+#btnModule{
+	-fx-background-color: #AED6F1;
+	-fx-font-size: 9pt;
+	-fx-font-weight:bold;
+	-fx-font-align:left;
+}
+#btnModule:hover{
+	-fx-border-radius:2px ;
+}
+#form{
+	 -fx-text-fill:#FFFFFF;
+	 -fx-font-weight:bold;
+}
+#ModuleItemBg{
+	/*-fx-background-color: #C1A63D;*/
+	-fx-background-color: #EBF5FB;
+	-fx-border-radius: 10px;
+}
+#ItemCatTitle{
+	-fx-font-weight:bold;
+	-fx-font-size: 10pt;
+	-fx-border-color: #000000;
+	-fx-border-style: solid ;
+}

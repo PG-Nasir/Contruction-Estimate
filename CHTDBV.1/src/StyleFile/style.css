@@ -1,0 +1,38 @@
+@import "StyeFile/common.css";
+@import "StyeFile/ModuleItem.css";
+.root{
+    -fx-font-size: 10pt;
+    -fx-font-weight:Normal;
+    -fx-font-family: "Arial";
+    -fx-base: rgb(176,196,222);
+    
+}
+.button{
+ 	-fx-font: bold  10pt "Arial";
+    -fx-effect: dropshadow( one-pass-box , black , 8 , 0.0 , 2 , 0 );
+}
+.text-field {
+   -fx-font-weight:normal;
+   -fx-font-size: 14;
+}
+.label {
+   -fx-font-weight:bold;
+   -fx-font-size: 13;
+}
+
+.text-field:focused {
+     -fx-font-weight:bold;
+     -fx-font-size: 14;
+} 
+#DevBorder{
+	-fx-border-color: #000000;
+	-fx-border-style: solid ;
+	-fx-background-color: #F5F5F5;
+}
+#Company{
+	-fx-font-size: 12pt;
+	-fx-font-weight:Normal;
+	-fx-font-family: "Arial";
+}
+
+

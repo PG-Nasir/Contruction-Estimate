@@ -1,0 +1,16 @@
+
+.root{
+    -fx-font-size: 10pt;
+    -fx-font-weight:Normal;
+    -fx-font-family: "Arial";
+      -fx-base: rgb(176,196,222);
+}
+#Required{
+	-fx-font-size: 14pt;
+    -fx-font-weight:bold;
+    -fx-text-fill:red;
+}
+#upload{
+	-fx-border: 2px solid #000;
+	-fx-border-style: solid;
+}

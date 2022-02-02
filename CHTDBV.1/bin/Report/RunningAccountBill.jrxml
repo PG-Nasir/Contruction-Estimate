@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EsmitateReport" language="groovy" pageWidth="1008" pageHeight="597" orientation="Landscape" columnWidth="948" leftMargin="40" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="741"/>
+	<property name="ireport.y" value="432"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="sql" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" select a.itemCode,(select Description from tbItemInfo where ItemCode=a.ItemCode) as ItemDescription,(select UnitName from TbUnitInfo where UnitId=(select UnitId from tbItemInfo where ItemCode=a.ItemCode)) as Unit,(select sum(qty) from tbProjectDetails where ProjectId=b.ProjectId and ItemCode1=a.ItemCode) as Qty,a.ExecuteQty,(select ExecuteQty from TbProjectBillDetails where ProjectId=b.ProjectId and BillId=(select BillId from TbProjectBillDetails where ProjectId=b.ProjectId and BillId<b.BillId and ItemCode=a.ItemCode order by BillId desc) and ItemCode=a.ItemCode) as PreviousExeQty,(select avg(rate) from tbProjectDetails where ProjectId=b.ProjectId and ItemCode1=a.ItemCode) as Rate,(select ProjectCode from tbProjectInfo where ProjectId=b.ProjectID) as ProjectCode,(select AdpNo from tbProjectInfo where ProjectId=b.ProjectID) as AdpNo, b.ProjectId,b.MeasurementMadeBy,b.IsFinalBill,b.BDENo,b.RecorderPage,b.CompletionDate,b.CashBookNo,(select Description from tbProjectInfo where ProjectId=b.ProjectID) as ProjectDescription,b.BillId, b.ProjectId,b.CashBookNo,(select Name from TbContractorInfo where AutoId=b.ContractorId) as ContractorName,b.BillDate,b.ReferenceAgreement,b.WorkOrderDate,b.WorkOrderCommentNo,b.RunningBillNo,b.TotalQty,b.TotalAmount,b.DeductionType,b.DeductionValue from TbProjectBillDetails a join TbProjectBill b on b.ProjectId=a.ProjectId and b.BillId=a.BillId  where b.ProjectId='29' and RunningBillNo='1st'"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="orgName" class="java.lang.String"/>
+	<parameter name="orgAddress" class="java.lang.String"/>
+	<parameter name="orgMobile" class="java.lang.String"/>
+	<parameter name="devName" class="java.lang.String"/>
+	<parameter name="devEmail" class="java.lang.String"/>
+	<parameter name="devTele" class="java.lang.String"/>
+	<parameter name="parameter1" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[$P!{sql}]]>
+	</queryString>
+	<field name="ItemCode" class="java.lang.Object"/>
+	<field name="ItemDescription" class="java.lang.Object"/>
+	<field name="Unit" class="java.lang.Object"/>
+	<field name="Qty" class="java.lang.Object"/>
+	<field name="ExecuteQty" class="java.lang.Object"/>
+	<field name="PreviousExeQty" class="java.lang.Object"/>
+	<field name="Rate" class="java.lang.Object"/>
+	<field name="ProjectCode" class="java.lang.Object"/>
+	<field name="AdpNo" class="java.lang.Object"/>
+	<field name="ProjectId" class="java.lang.Object"/>
+	<field name="MeasurementMadeBy" class="java.lang.Object"/>
+	<field name="IsFinalBill" class="java.lang.Object"/>
+	<field name="BDENo" class="java.lang.Object"/>
+	<field name="RecorderPage" class="java.lang.Object"/>
+	<field name="CompletionDate" class="java.lang.Object"/>
+	<field name="CashBookNo" class="java.lang.Object"/>
+	<field name="ProjectDescription" class="java.lang.Object"/>
+	<field name="BillId" class="java.lang.Object"/>
+	<field name="ContractorName" class="java.lang.Object"/>
+	<field name="BillDate" class="java.lang.Object"/>
+	<field name="ReferenceAgreement" class="java.lang.Object"/>
+	<field name="WorkOrderDate" class="java.lang.Object"/>
+	<field name="WorkOrderCommentNo" class="java.lang.Object"/>
+	<field name="RunningBillNo" class="java.lang.Object"/>
+	<field name="TotalQty" class="java.lang.Object"/>
+	<field name="TotalAmount" class="java.lang.Object"/>
+	<field name="DeductionType" class="java.lang.Object"/>
+	<field name="DeductionValue" class="java.lang.Object"/>
+	<variable name="Amount" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[($F{ExecuteQty}+($F{PreviousExeQty}==null?0:$F{PreviousExeQty}))*$F{Rate}]]></variableExpression>
+	</variable>
+	<variable name="decuctionamt" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[($V{TotalAmount}*$F{DeductionValue})/100]]></variableExpression>
+	</variable>
+	<variable name="sl" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+	</variable>
+	<variable name="PreAmount" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{Rate}*$F{PreviousExeQty}]]></variableExpression>
+	</variable>
+	<variable name="PreTotalAmt" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Rate}*$F{PreviousExeQty}]]></variableExpression>
+	</variable>
+	<variable name="gTotal" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{DeductionType}.equals("Above")?$F{TotalAmount}+$V{decuctionamt}:$F{TotalAmount}-$V{decuctionamt}]]></variableExpression>
+	</variable>
+	<variable name="uptoExeQty" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{ExecuteQty}+($F{PreviousExeQty}==null?0:$F{PreviousExeQty})]]></variableExpression>
+	</variable>
+	<variable name="tuptoExeQty" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ExecuteQty}+($F{PreviousExeQty}==null?0:$F{PreviousExeQty})]]></variableExpression>
+	</variable>
+	<variable name="TotalAmount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{Amount}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="203" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="7" width="948" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{RunningBillNo}.toUpperCase()+" RUNNING ACCOUNT BILL"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="26" width="948" height="14"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[(For Contractor's and Suppliers-This form provides only for payments for work or supplies actually measured)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="44" width="110" height="14"/>
+				<textElement/>
+				<text><![CDATA[Cash Book Voucher No]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="112" y="44" width="89" height="14"/>
+				<box>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CashBookNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="201" y="44" width="26" height="14"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Dated]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="228" y="44" width="100" height="14"/>
+				<box>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{BillDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="58" width="131" height="14"/>
+				<textElement/>
+				<text><![CDATA[Name of Contractor/Supplier:-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="132" y="58" width="415" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ContractorName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="72" width="70" height="14"/>
+				<textElement/>
+				<text><![CDATA[Name of work:-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="74" y="75" width="614" height="49"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{ProjectDescription}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="124" width="92" height="14"/>
+				<textElement/>
+				<text><![CDATA[Serial No. of this bill:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="125" width="126" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{BillId}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="137" width="174" height="14"/>
+				<textElement/>
+				<text><![CDATA[No.and date of his first Bill for this work]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="174" y="137" width="100" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{BillDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="151" width="110" height="14"/>
+				<textElement/>
+				<text><![CDATA[Reference to Agreement]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="111" y="151" width="435" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ReferenceAgreement}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="166" width="180" height="14"/>
+				<textElement/>
+				<text><![CDATA[Date of writen order to Commence work:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="180" y="166" width="216" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{WorkOrderCommentNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="166" width="100" height="14"/>
+				<box>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{WorkOrderDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="393" y="166" width="26" height="14"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Dated]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="181" width="163" height="14"/>
+				<textElement/>
+				<text><![CDATA[Date of actual completion of work:-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="152" y="181" width="395" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{CompletionDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="60" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="949" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="59" width="949" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement x="39" y="1" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement x="128" y="1" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement x="326" y="0" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement x="409" y="0" width="1" height="58"/>
+			</line>
+			<line>
+				<reportElement x="537" y="0" width="1" height="58"/>
+			</line>
+			<line>
+				<reportElement x="652" y="0" width="1" height="58"/>
+			</line>
+			<line>
+				<reportElement x="741" y="15" width="1" height="43"/>
+			</line>
+			<line>
+				<reportElement x="821" y="1" width="1" height="59"/>
+			</line>
+			<line>
+				<reportElement x="948" y="1" width="1" height="57"/>
+			</line>
+			<line>
+				<reportElement x="653" y="15" width="168" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="2" y="1" width="37" height="58"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Serial No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="1" width="88" height="57"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Item Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="129" y="1" width="197" height="49"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Items of work or supplies (grouped under "sub-ead" and sub-work of estimate)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="1" width="81" height="49"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="1" width="127" height="49"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Quantity executed for supplied up to date as per measurement book]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="538" y="1" width="114" height="57"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Rate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="652" y="1" width="169" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="654" y="16" width="87" height="42"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Up to date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="742" y="16" width="79" height="42"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Since previous  bill total for each sub-head]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="822" y="1" width="126" height="57"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Remark]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<line>
+				<reportElement x="1" y="-1" width="947" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="14" width="949" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="39" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="128" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="326" y="-2" width="1" height="17"/>
+			</line>
+			<line>
+				<reportElement x="409" y="-2" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="537" y="-2" width="1" height="17"/>
+			</line>
+			<line>
+				<reportElement x="652" y="-2" width="1" height="17"/>
+			</line>
+			<line>
+				<reportElement x="821" y="-1" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="948" y="-1" width="1" height="16"/>
+			</line>
+			<textField>
+				<reportElement x="41" y="0" width="87" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ItemCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="0" width="197" height="14"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ItemDescription}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="327" y="0" width="82" height="14"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{Unit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000">
+				<reportElement x="538" y="0" width="114" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Rate}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="741" y="-2" width="1" height="17"/>
+			</line>
+			<textField pattern="#,##0.000">
+				<reportElement x="653" y="0" width="88" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{Amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="1" y="0" width="38" height="14"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$V{sl}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="742" y="0" width="78" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{PreAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="413" y="0" width="124" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{uptoExeQty}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="98" splitType="Stretch">
+			<staticText>
+				<reportElement x="410" y="2" width="133" height="14"/>
+				<box>
+					<bottomPen lineWidth="3.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[II-Certificate & Signature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="23" width="150" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[The measurement were made by ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="294" y="23" width="100" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[ON.........................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="386" y="23" width="104" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[and are recorded page]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="665" y="23" width="58" height="14"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[DBE B/Ban:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="36" width="356" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[No advance payment has been made previously without detailed measurement.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="54" width="114" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Singnature of Officer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="68" width="114" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Preparing the bill]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="82" width="114" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dated............................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="576" y="68" width="114" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CHTDB,Bandarban.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="576" y="54" width="114" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Assistant Engineer]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="154" y="24" width="146" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{MeasurementMadeBy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="718" y="23" width="100" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{BDENo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="548" y="23" width="126" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[of Measurement  Book No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="490" y="23" width="58" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{RecorderPage}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="159" splitType="Stretch">
+			<line>
+				<reportElement x="1" y="-1" width="947" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="14" width="949" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="39" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="128" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="326" y="-2" width="1" height="17"/>
+			</line>
+			<line>
+				<reportElement x="409" y="0" width="1" height="14"/>
+			</line>
+			<line>
+				<reportElement x="537" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="652" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="821" y="-1" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="948" y="-1" width="1" height="16"/>
+			</line>
+			<textField pattern="#,##0.000">
+				<reportElement x="410" y="0" width="127" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{tuptoExeQty}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000">
+				<reportElement x="654" y="0" width="87" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{TotalAmount}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="14" width="947" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="29" width="949" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="14" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="537" y="15" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="652" y="15" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="821" y="14" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="948" y="14" width="1" height="16"/>
+			</line>
+			<staticText>
+				<reportElement x="538" y="15" width="114" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Tk]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="15" width="70" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Deduction @]]></text>
+			</staticText>
+			<line>
+				<reportElement x="741" y="-1" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="741" y="14" width="1" height="15"/>
+			</line>
+			<textField pattern="#,##0.000">
+				<reportElement x="654" y="15" width="87" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{decuctionamt}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="948" y="29" width="1" height="110"/>
+			</line>
+			<line>
+				<reportElement x="741" y="29" width="1" height="110"/>
+			</line>
+			<line>
+				<reportElement x="652" y="30" width="1" height="109"/>
+			</line>
+			<line>
+				<reportElement x="0" y="29" width="1" height="110"/>
+			</line>
+			<line>
+				<reportElement x="537" y="30" width="1" height="109"/>
+			</line>
+			<line>
+				<reportElement x="741" y="14" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement x="0" y="138" width="949" height="1"/>
+			</line>
+			<line>
+				<reportElement x="1" y="29" width="947" height="1"/>
+			</line>
+			<line>
+				<reportElement x="821" y="29" width="1" height="110"/>
+			</line>
+			<staticText>
+				<reportElement x="4" y="31" width="295" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Total value of work done or supplies made to date...................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="45" width="295" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Deduct value to work or supplies shown on previous Bill.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="78" width="295" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Net Value of work or supplies since previous Bill......................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="92" width="295" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Deduct cost of Materials............................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="119" width="308" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Net payment...............................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="140" width="308" height="14"/>
+				<box rightPadding="2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[1.Certified that the work has been completed as per specification.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="68" y="15" width="321" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DeductionType}.equals("Asper")?"":$F{DeductionType}.equals("Above")?$F{DeductionValue}+"Above as per accepted":$F{DeductionType}.equals("Less")?$F{DeductionValue}+"Less as per accepted":""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.000" isBlankWhenNull="true">
+				<reportElement x="743" y="15" width="77" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{PreTotalAmt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="654" y="31" width="87" height="14"/>
+				<box rightPadding="2">
+					<bottomPen lineWidth="2.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{gTotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="544" y="15" width="100" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{TotalAmount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
